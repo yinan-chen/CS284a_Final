@@ -18,7 +18,7 @@
       font-family: 'Montserrat', sans-serif;
     }
   </style>
-  <title>Yinan Chen | Project 3-2: Path Tracer</title>
+  <title>Water Ripple Simulation</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Nunito&display=swap" rel="stylesheet">
 </head>
@@ -26,181 +26,93 @@
 
 <body>
 
-  <h1 align="middle">CS284a: Computer Graphics and Imaging, Spring 2021</h1>
-  <h1 align="middle">Project 3-2: Path Tracer</h1>
-  <h2 align="middle">Yinan Chen</h2>
+  <h1 align="middle">CS284a: Computer Graphics, Spring 2021</h1>
+  <h2 align="middle">Final Project - Water Ripple Simulation</h1>
+  <h4 align="middle">Lloyd Brown, Yinan Chen, Sophie Wu, Weiyan Zhu</h2>
 
-  <br><br>
+  <br>
 
   <div>
 
-    <h2 align="middle">Overview</h2>
+    <h2 align="middle">Problem Description</h2>
 
     <p>
-      For this project, I chose to work on Part 1 and Part 2, which extend the ray tracing to cover more materials including mirror, glass, and microfacet. Implementations for these two parts focus on reflection, refraction, and various BRDF evaluation and sampling functions. These two parts’ instructions have clearly listed out steps to follow. However, multiple functions introduce new and complex equations and distributions to use. Thus, one of challenging points for me in this project is to understand these equations and apply them correctly in the implementation. Another point that I pays extra attention is always checking the validation of denominator to avoid invalid division happens. The bug that I encountered in Part 2 was caused by this issue.
+      Water simulations are challenging due to water’s dynamic nature and the complicated lighting effects that result from its dynamism. Solving physical models precludes efficient real-time simulation. As a result approximate methods arose to improve simulation efficiency. Process-based approximate methods fail to produce complex models given their lack of a physical basis.
     </p>
+    <p>
+      Our interactive water ripple simulation is based in a mass-spring model. The surface of the water is represented by a mesh of mass-springs. Ripple effects are created by considering the relationship between points on the water’s surface using Hooke’s law.
+    </p>  
 
-    Project Report Link: <a href="https://cal-cs184-student.github.io/p3-2-pathtracer-sp21-kitty/">https://cal-cs184-student.github.io/p3-2-pathtracer-sp21-kitty/</a>
+    <br>
 
-    <br><br>
-
-    <h2 align="middle">Part 1: Mirror and Glass Materials</h2>
+    <h2 align="middle">Goals and Deliverables</h2>
 
     <p>
-      Implementation for this part strictly followed the detailed steps listed in the document. I implemented reflect() and refract() functions to calculate wi, which is the direction of ray out from the intersection point. reflect() was based on perfect specular reflection and refract() utilized the Snell’s law. Then I implemented sample_f() function for each material to get the sampled BRDF value. Mirror model depends on output from reflect(), refracted material depends on refract(), and glass model involves both reflection and refraction, using the Schlick's reflection coefficient to determine which to return. One bug that I encountered during the implementation was that I didn’t set a correct directionality for wi.z in the refract(), so the image that I rendered showed a completely black refraction sphere. I initially set a uniform negative value for wi.z, but later I realized that I had to rely on wo.z’s directionality to determine directionality of wi.z. This would ensure that z values for wo and wi were always opposite.
+      Our deliverable would be implemented using WebGL and Three.js. We are aiming to deliver a final result that would mimic <a href="http://madebyevan.com/webgl-water/">Evan Wallace’s demo of WebGL water</a>. Our MVP would be a water ripple simulation such that users could interact freely with the water surface to make ripples, with raytraced light effects. Features that we are interested in developing but are subject to implementation timeframe are ripple effects resulting from the interaction of sphere with water (moving around the sphere or applying the gravity effect) and real-time caustics from the light on the pool floor. The demo video would showcase both the static scene and dynamic interactions of the above features. Our assessment would be based on how good the quality of the ripple simulation is, how successful the interactive features work in real-time, and how fast the real-time rendering would react to each user interaction (f/s).     
     </p>
 
     <br>
 
-    <!-- Figues: CBspheres -->
-    <div align="middle">
-      <table style="width=100%">
-        <tr>
-          <td>
-            <img src="img/part1/cbspheres_m0.png" align="center"/>
-            <figcaption align="middle">CBspheres: m = 0</figcaption>
-          </td>
-          <td>
-            <img src="img/part1/cbspheres_m1.png" align="center"/>
-            <figcaption align="middle">CBspheres: m = 1</figcaption>
-          </td>
-        </tr>
-         <tr>
-          <td>
-            <img src="img/part1/cbspheres_m2.png" align="center"/>
-            <figcaption align="middle">CBspheres: m = 2</figcaption>
-          </td>
-          <td>
-            <img src="img/part1/cbspheres_m3.png" align="center"/>
-            <figcaption align="middle">CBspheres: m = 3</figcaption>
-          </td>
-        </tr>
-         <tr>
-          <td>
-            <img src="img/part1/cbspheres_m4.png" align="center"/>
-            <figcaption align="middle">CBspheres: m = 4</figcaption>
-          </td>
-          <td>
-            <img src="img/part1/cbspheres_m5.png" align="center"/>
-            <figcaption align="middle">CBspheres: m = 5</figcaption>
-          </td>
-        </tr>
-         <tr>
-          <td>
-            <img src="img/part1/cbspheres_m100.png" align="center"/>
-            <figcaption align="middle">CBspheres: m = 100</figcaption>
-          </td>
-        </tr>
-      </table>
-    </div>
+    <h2 align="middle">Schedule</h2>
 
-    <br>
-
-    <p>
-      The CBspheres images above demonstrate how light interacts with different materials and show global illumination with multiple max ray depths. All images were rendered with 256 samples per pixel, 4 samples per light, and max ray depth of 0, 1, 2, 3, 4, 5, and 100. Left sphere in image is a mirror model and the right one is a glass model.
-    </p>
-    <p>
-      With max_ray_depth = 0, there is only zero-bounce radiance, thus only the emitted light source is lit. With max_ray_depth = 1, direct illumination takes into account. Light bounces at walls, floor, and directly reflects on spheres, so we could see the room is lit except the ceiling, and light sources are visible in surface of spheres. Starting from max_ray_depth = 2, we are also counting indirect illumination. With max_ray_depth = 2, the ceiling is lit and sphere shadows on floor turn to be not completely black. Light rays that bounce in the whole room reflect on the mirror and glass spheres, so we could see a clear Cornell box in mirror sphere, and a rough one on the surface of the glass sphere. Since there aren’t sufficient light bounces, the glass sphere remain blackish, and  ceiling shown in the mirror is still black. With max_ray_depth = 3, refracted light rays become visible so we see purple and gray walls shown in the glass sphere. Some light rays are out from the glass sphere and bounce on the floor, thus there is a bright highlight beneath the glass sphere. Room ceiling shown in the mirror sphere is also lit, while the glass sphere remains black due to that more bounces required for refracted rays to hit the mirror. With max_ray_depth = 4, there is a clear light spot shown on the purple wall. One potential path is a light ray hits at mirror sphere first, refracts into and out the glass sphere, then bounces at the wall. Glass sphere reflected in mirror also becomes colorful. With max_ray_depth = 5 and even higher, it becomes harder to notice new bounce effect, but as number of light bounce increases, it is clear to notice that more parts in the room are lit and the entire box becomes brighter and more colorful as more radiance is included.
-    </p>
-
-    <br><br>
-
-    <h2 align="middle">Part 2: Microfacet Material</h2>
-
-    <p>
-      Implementation for this part focuses on Microfacet material’s BRDF evaluation function and the importance sampling function. The compute the sampled BRDF value, we have to know the associated Fresnel term, shadowing-masking term (provided), and the normal distributions function on half vector. The Fresnel term was calculated based on the Fresnel equation, using conductor material’s refraction indices at fixed wavelengths representing RGB color. To avoid duplicate code, I wrote a function called computeF(), which takes into each wavelength’s refraction indices, then output the corresponding Fresnel term based on the Fresnel equation. As for the normal distribution function on half vector, we relied on the Backmann distribution, as the document suggests. By following the equation provided, we could get the NDF for the given half vector. I checked my implementation prior implementing the importance sampling and I found the rendered image had random black spots. After checking my implementation, I found I didn’t check if the denominator value in calculation of the sample BRDF value was valid. More specifically, if dot values of macro normal vector and wi/wo were positive. This resulted in potential zero being divided. The importance sampling function was implemented strictly following the equations and steps provided by the instruction. To avoid invalid situations, I checked each equation’s denominator to avoid division by zero and ensures that every pdf resulted is positive.   
-    </p> 
-
-    <br>
-
-    <!-- Figures: CBdrgaon -->
-    <div align="middle">
-      <table style="width=100%">
-        <tr>
-          <td>
-            <img src="img/part2/CBdragon_au_0.005.png" align="center"/>
-            <figcaption align="middle">CBdragon: alpha = 0.005</figcaption>
-          </td>
-          <td>
-            <img src="img/part2/CBdragon_au_0.05.png" align="center"/>
-            <figcaption align="middle">CBdragon: alpha = 0.05</figcaption>
-          </td>  
-        </tr>
-        <tr>
-          <td>
-            <img src="img/part2/CBdragon_au_0.25.png" align="center"/>
-            <figcaption align="middle">CBdragon: alpha = 0.25</figcaption>
-          </td>
-          <td>
-            <img src="img/part2/CBdragon_au_0.5.png" align="center"/>
-            <figcaption align="middle">CBdragon: alpha = 0.5</figcaption>
-          </td>  
-        </tr>
-      </table>
-    </div>
-
-    <br>
-
-    <p>
-      The CBdrgaon images shown above demonstrate how the rendering varies as roughness of material (alpha) changes. All images were rendered 256 samples per pixel, 1 sample per light, 7 light bounces, and with alpha set to 0.005, 0.05, 0.25 and 0.5. The higher the alpha value is, the rougher the macro surface is.
-    </p>
-    <p>
-      Noticeable from the sequence of images, as alpha value increases, more details on dragon become visible. This is due to that rougher surface (higher alpha) would more likely result in diffuse reflection, while smoother surface (smaller alpha) is more glossy, resulting in more like mirror reflection. As seen in the image with alpha = 0.005, there are very concentrated light spots shown on dragon, as well as the room reflection. The image also shows some white sparkles, which are fireflies caused by the super specular surface. With alpha = 0.05, although mirror reflection of room and black regions still remain on the dragon, as the light rays become more spread out, more areas in dragon that are directly facing the light source light up. The fireflies also appear more diffuse. With alpha = 0.25 and even higher, there is gradually less mirror reflection of room and less black region shown on the dragon. In the last image, the entire dragon lights up and thus more details on dragon become visible.
-    </p>
-
-    <br>  
-
-    <!-- Figures: CBbunny -->
-    <div align="middle">
-      <table style="width=100%">
-        <tr>
-          <td>
-            <img src="img/part2/CBbunny_cu_H.png" align="center"/>
-            <figcaption align="middle">CBbunny: cosine hemisphere sampling</figcaption>
-          </td>
-          <td>
-            <img src="img/part2/CBbunny_cu.png" align="center"/>
-            <figcaption align="middle">CBbunny: importance sampling</figcaption>
-          </td>
-        </tr>
-      </table>
-    </div>
-
-    <br>
-
-    <p>
-      The above two CBbunney images show rendering outputs using two sampling methods, cosine hemisphere sampling (left one) and importance sampling (right one). Both images were rendered using 64 samples per pixel, 1 sample per light, and 7 light bounces. It is clear to notice that the left image rendered with cosine hemisphere sampling is much more noisy. The bunny looks more granular with clearly visible white sparkles and a black outline. While, the bunny rendered with importance sampling is much clearer in its appearance. Such difference is related to that cosine hemisphere sampling is more suitable for sampling diffuse material, while CBbunney rendered above has an alpha value set to 0.05, which indicates that its surface is smoother and more specular. Besides, the importance sampling leverages the shape of Beckmann NDF. Hence, it results a more noise-free output.
-    </p>
-
-    <br>
-
-    <!-- Figures: other conductor materials -->
-    <div align="middle">
-      <table style="width=100%">
-        <tr>
-          <td>
-            <img src="img/part2/CBbunny_Fe.png" align="center"/>
-            <figcaption align="middle">CBbunny: Iron</figcaption>
-          </td>
-          <td>
-            <img src="img/part2/CBdragon_Ni.png" align="center"/>
-            <figcaption align="middle">CBdragon: Nickel</figcaption>
-          </td>
-        </tr>
-      </table>
-    </div>
-
-    <br>
-
-    <p>
-      Both images above were rendered with 256 samples per pixel, 4 samples per light, 7 light bounces, and each model's default alpha value. The bunny image on the left has iron as the material, and the dragon image on the right uses nickel.
-    </p>
+    <p>Week 1 (4/12)</p>
     <ul>
-      <li>Iron (Fe): eta(2.8851, 2.9500, 2.6500), K(3.0449, 2.9300, 2.8075)</li>
-      <li>Nickel (Ni): eta(1.9874, 1.9200, 1.7675), K(4.0011, 3.6100, 3.0550)</li>
+     <li>
+       During the first half of week1, team members should utilize the resource to get familiar with the tools, math and algorithms that this project requires. For example, members should get a better understanding about Navier-Stokes equations and try to write simple programs with Three.js.
+     </li>
+     <li>
+       After getting familiar with the tools and maths, the team will meet up to divide the work and start coding separately. 
+     </li>
+    </ul>
+
+    <p>Week 2 (4/19)</p>
+    <ul>
+     <li>
+       The team will continue to work on the code, and integrate different parts after they are finished. If there are any problems that are hard to solve, members should help each other and do pair programming to solve the problems. 
+     </li>
     </ul>  
 
-    <br><br>
+    <p>Week 3 (4/26)</p>
+    <ul>
+     <li>
+       At the beginning of week3, most parts of the project should be integrated together. The team will continue to integrate, test the program and fix bugs. 
+     </li>
+     <li>
+       Working on the milestone report and video. 
+     </li>
+     <li>
+       If everything is working fine, the team will try to polish the program by making the algorithm more efficient or improving the interaction between user and the program.
+     </li>
+    </ul>  
+
+    <p>Week 4 (5/3)</p>
+    <ul>
+     <li>
+      Work on the deliverables for this class, including the presentations and reports. The team should also try to make an interactable website to showcase the project. 
+     </li>
+    </ul>  
+
+    <p>Week 5 (5/10)</p>
+    <ul>
+     <li>
+       Work on and finalize the final paper.
+     </li>
+    </ul>    
+
+    <br>
+
+    <h2 align="middle">Resources</h2>
+
+    <br>
+
+    <ul>
+      <li><a href="https://www.khronos.org/webgl/wiki/Main_Page">WebGL</a> and <a href="https://threejs.org/">Three.js</a></li>
+      <li><a href="https://ieeexplore.ieee.org/document/5647276">Paper: Ripple simulation based on mass-spring model and image space computation</a></li>
+      <li><a href="https://aquila.usm.edu/cgi/viewcontent.cgi?article=1151&context=honors_theses">Paper: Water Simulation on WebGL and Tree.js</a></li>
+      <li><a href="http://graphics.cs.cmu.edu/nsp/course/15-464/Spring11/papers/StamFluidforGames.pdf">Paper: Real-Time Fluid Dynamics for Games</a></li>
+      <li><a href="http://madebyevan.com/webgl-water/">Evan Wallace’s demo of WebGL water</a></li>
+      <li><a href="https://www.youtube.com/watch?v=qsYE1wMEMPA">YouTube video going through fundamentals of fluid simulation</a></li>
+    </ul>  
 
 </body>
 </html>
