@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <style>
+    body {
+      padding: 100px;
+      width: 1000px;
+      margin: auto;
+      text-align: left;
+      font-size: 18px;
+      font-weight: 300;
+      font-family: 'Nunito', sans-serif;
+      color: #121212;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Montserrat', sans-serif;
+    }
+  </style>
+  <title>Water Ripple Simulation</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Nunito&display=swap" rel="stylesheet">
+</head>
+
+
+<body>
+
+  <h1 align="middle">CS284a: Computer Graphics, Spring 2021</h1>
+  <h2 align="middle">Final Project - Water Ripple Simulation</h1>
+  <h4 align="middle">Lloyd Brown, Yinan Chen, Sophie Wu, Weiyan Zhu</h2>
+
+  <br>
+
+  <div>
+
+    <h2 align="middle">Summary</h2>
+
+    <p>
+      Create an interactive system where users can move their mouse to “draw” water ripples on the surface. Additional features including lighting and gravity will also be implemented to achieve a more realistic final product.
+    </p>
+
+    <br>
+
+    <h2 align="middle">Problem Description</h2>
+
+    <p>
+      Water simulations are challenging due to water’s dynamic nature and the complicated lighting effects that result from its dynamism. Solving physical models precludes efficient real-time simulation. As a result approximate methods arose to improve simulation efficiency. Process-based approximate methods fail to produce complex models given their lack of a physical basis.
+    </p>
+    <p>
+      Our interactive water ripple simulation is based in a mass-spring model. The surface of the water is represented by a mesh of mass-springs. Ripple effects are created by considering the relationship between points on the water’s surface using Hooke’s law.
+    </p>  
+
+    <br>
+
+    <h2 align="middle">Goals and Deliverables</h2>
+
+    <p>
+      Our deliverable would be implemented using WebGL and Three.js. We are aiming to deliver a final result that would mimic <a href="http://madebyevan.com/webgl-water/">Evan Wallace’s demo of WebGL water</a>. Our MVP would be a water ripple simulation such that users could interact freely with the water surface to make ripples, with raytraced light effects. Features that we are interested in developing but are subject to implementation timeframe are ripple effects resulting from the interaction of sphere with water (moving around the sphere or applying the gravity effect) and real-time caustics from the light on the pool floor. The demo video would showcase both the static scene and dynamic interactions of the above features. Our assessment would be based on how good the quality of the ripple simulation is, how successful the interactive features work in real-time, and how fast the real-time rendering would react to each user interaction (f/s).     
+    </p>
+
+    <br>
+
+    <h2 align="middle">Schedule</h2>
+
+    <p>Week 1 (4/12)</p>
+    <ul>
+     <li>
+       During the first half of week1, team members should utilize the resource to get familiar with the tools, math and algorithms that this project requires. For example, members should get a better understanding about Navier-Stokes equations and try to write simple programs with Three.js.
+     </li>
+     <li>
+       After getting familiar with the tools and maths, the team will meet up to divide the work and start coding separately. 
+     </li>
+    </ul>
+
+    <p>Week 2 (4/19)</p>
+    <ul>
+     <li>
+       The team will continue to work on the code, and integrate different parts after they are finished. If there are any problems that are hard to solve, members should help each other and do pair programming to solve the problems. 
+     </li>
+    </ul>  
+
+    <p>Week 3 (4/26)</p>
+    <ul>
+     <li>
+       At the beginning of week3, most parts of the project should be integrated together. The team will continue to integrate, test the program and fix bugs. 
+     </li>
+     <li>
+       Working on the milestone report and video. 
+     </li>
+     <li>
+       If everything is working fine, the team will try to polish the program by making the algorithm more efficient or improving the interaction between user and the program.
+     </li>
+    </ul>  
+
+    <p>Week 4 (5/3)</p>
+    <ul>
+     <li>
+      Work on the deliverables for this class, including the presentations and reports. The team should also try to make an interactable website to showcase the project. 
+     </li>
+    </ul>  
+
+    <p>Week 5 (5/10)</p>
+    <ul>
+     <li>
+       Work on and finalize the final paper.
+     </li>
+    </ul>    
+
+    <br>
+
+    <h2 align="middle">Resources</h2>
+
+    <br>
+
+    <ul>
+      <li><a href="https://www.khronos.org/webgl/wiki/Main_Page">WebGL</a> and <a href="https://threejs.org/">Three.js</a></li>
+      <li><a href="https://ieeexplore.ieee.org/document/5647276">Paper: Ripple simulation based on mass-spring model and image space computation</a></li>
+      <li><a href="https://aquila.usm.edu/cgi/viewcontent.cgi?article=1151&context=honors_theses">Paper: Water Simulation on WebGL and Tree.js</a></li>
+      <li><a href="http://graphics.cs.cmu.edu/nsp/course/15-464/Spring11/papers/StamFluidforGames.pdf">Paper: Real-Time Fluid Dynamics for Games</a></li>
+      <li><a href="http://madebyevan.com/webgl-water/">Evan Wallace’s demo of WebGL water</a></li>
+      <li><a href="https://www.youtube.com/watch?v=qsYE1wMEMPA">YouTube video going through fundamentals of fluid simulation</a></li>
+    </ul>  
+
+</body>
+</html>
